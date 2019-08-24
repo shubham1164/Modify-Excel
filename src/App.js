@@ -15,10 +15,11 @@ class App extends Component {
     super(props);
     this.state = {
       file: {},
-      data: [],
+      dataArray: [],
     }
     this.handleFile = this.handleFile.bind(this);
     this.handleChange = this.handleChange.bind(this);
+    this.handleDataModification = this.handleDataModification.bind(this)
   }
 
   handleChange(e) {
@@ -44,10 +45,10 @@ class App extends Component {
       const wsname = wb.SheetNames[0];
       const ws = wb.Sheets[wsname];
       /* Convert array of arrays */
-      const data = XLSX.utils.sheet_to_json(ws, {header:1});
+      const dataArray = XLSX.utils.sheet_to_json(ws, {header:1});
       /* Update state */
       this.setState({
-          data: data
+          dataArray: dataArray
       });
     };
 
@@ -56,6 +57,26 @@ class App extends Component {
     } else {
       reader.readAsArrayBuffer(this.state.file);
     };
+  }
+
+  handleDataModification(id, valueIndex, newValue){
+      const length = this.state.dataArray.length;
+      var index = -1;
+      for (var i=0; i<length; i++){
+        if (this.state.dataArray[i][0] === id){
+          index = i;
+          break;
+        }
+      }
+      if(index !== -1){
+        let dataArray = [...this.state.dataArray];
+        let data = [...dataArray[index]];
+        data[valueIndex] = newValue;
+        dataArray[index] = data;
+        this.setState({
+          dataArray: dataArray
+        });
+      }
   }
 
   render() {
@@ -68,7 +89,7 @@ class App extends Component {
             value="Show"
             onClick={this.handleFile} />
         </div>
-        <DisplayTable dataArray={this.state.data} />
+        <DisplayTable dataArray={this.state.dataArray} handleDataModification={this.handleDataModification} />
       </div>
     )
   }

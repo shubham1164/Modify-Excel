@@ -6,24 +6,6 @@ const NAME_CHARS_LIMIT = 50;
 
 class DisplayTable extends Component {
 
-  constructor(props){
-    super(props);
-    this.state = {
-      dataArray: []
-    }
-  }
-
-  static getDerivedStateFromProps(props, state){
-    if (state.dataArray.length === 0){
-      return({
-        dataArray: props.dataArray
-      })
-    } else {
-      // Return null if the state hasn't changed
-      return null;
-    }
-  }
-
   handleTableDataClick = (id, index, oldVal) => {
     try{
       // column name = id, name, email, contact, date
@@ -75,30 +57,16 @@ class DisplayTable extends Component {
       }
 
       // Update the latest value in the UI
-      this.updateTheNewValue(id, index, newValue)
+      this.sendModficationToParent(id, index, newValue)
 
     } catch(e){
       alert(e.message)
     }
   }
 
-  updateTheNewValue = (id, valueIndex, newValue) => {
-    const length = this.state.dataArray.length;
-    var index = -1;
-    for (var i=0; i<length; i++){
-      if (this.state.dataArray[i][0] === id){
-        index = i;
-        break;
-      }
-    }
-    if(index !== -1){
-      let dataArray = [...this.state.dataArray];
-      let data = [...dataArray[index]];
-      data[valueIndex] = newValue;
-      dataArray[index] = data;
-      this.setState({
-        dataArray: dataArray
-      });
+  sendModficationToParent = (id, valueIndex, newValue) => {
+    if (this.props.handleDataModification){
+      this.props.handleDataModification(id, valueIndex, newValue)
     }
   }
 
@@ -145,7 +113,7 @@ class DisplayTable extends Component {
   }
 
   renderHeader = () => {
-    var arr = this.state.dataArray[0];
+    var arr = this.props.dataArray[0];
     return (
       <tr>
       {
@@ -174,7 +142,7 @@ class DisplayTable extends Component {
   }
 
   render() {
-    var dataArray = this.state.dataArray;
+    var dataArray = this.props.dataArray;
     return (
       <div>
       {/* 1st row is headers and 2nd row contains data */}
@@ -198,7 +166,8 @@ class DisplayTable extends Component {
 }
 
 DisplayTable.propTypes = {
-  dataArray: PropTypes.array.isRequired
+  dataArray: PropTypes.array.isRequired,
+  handleDataModification: PropTypes.func.isRequired
 };
 
 DisplayTable.defaultProps = {
