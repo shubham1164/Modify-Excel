@@ -1,10 +1,11 @@
-# TaskApp
-Test App for Grabbngo
+# Modify-Excel
+This is a react app in which you can upload the excel file data, view the data and modify the data
 
-# Note
+### Note
 Use test_excel.xlsx file to test the app
 
-# Start project
-$npm install
-
-$npm start
+### Start project
+```bash
+npm install
+npm start
+```
